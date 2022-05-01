@@ -57,7 +57,6 @@ Cheers! You have successfully setup Hr-app  on your local machine.
 * [Composer](https://getcomposer.org/)
 
 ## :handshake: Contributors
-
-Counsel Profiling Content Management System
+Hr- App
 - JIMOH Mofoluwasho Kolawole (jmkolawole@gmail.com_) - Product Owner / Developer / Maintainer
 
