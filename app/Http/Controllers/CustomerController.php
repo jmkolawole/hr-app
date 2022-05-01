@@ -17,7 +17,7 @@ class CustomerController extends Controller
         $roles = Role::all();
         $customers = User::with('role')->paginate(20);
         $operations = Operation::all();
-        return view('welcome')->with(compact('roles','customers','operations'));
+        return view('welcome')->with(compact('roles', 'customers', 'operations'));
     }
 
     /* 
@@ -40,10 +40,11 @@ class CustomerController extends Controller
 
     }*/
 
-    public function assignOperation(Request $request){
+    public function assignOperation(Request $request)
+    {
         $role = Role::where('id', $request['role'])->first();
         $role->operations()->detach();
-        
+
         if ($request['operation_read']) {
             $role->operations()->attach(Operation::where('operation', 'read')->first());
         }
@@ -53,7 +54,7 @@ class CustomerController extends Controller
         }
 
         if ($request['operation_delete']) {
-            
+
             $role->operations()->attach(Operation::where('operation', 'delete')->first());
         }
         return redirect()->back();
@@ -62,10 +63,24 @@ class CustomerController extends Controller
     public function addCustomer(Request $request)
     {
         //Validate request here
+
+        $request->validate([
+            'role_id' => 'required|integer',
+            'firstname' => 'required|string',
+            'lastname' => 'required|string',
+            'position' => 'required',
+            'employee_id' => 'required',
+            'phone' => 'required',
+            'username' => 'required',
+            'password' => 'required|confirmed',
+        ]);
+        
+
         User::create([
             'role_id' => $request->role_id,
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
+            'position' => $request->position,
             'employee_id' => $request->employee_id,
             'email' => $request->email,
             'phone' => $request->phone,
@@ -76,28 +91,40 @@ class CustomerController extends Controller
         return redirect()->route('customers');
     }
 
-    public function editCustomer(Request $request){
-         $id = $request->route('id');
-         $user = User::whereId($id)->first();
-         
-         $user->role_id = $request->role_id;
-         $user->firstname = $request->firstname;
-         $user->lastname = $request->lastname;
-         $user->employee_id = $request->employee_id;
-         $user->email = $request->email;
-         $user->phone = $request->phone;
-         $user->username = $request->username;
-         $user->password = bcrypt($request->password);
+    public function editCustomer(Request $request)
+    {
+        $request->validate([
+            'role_id' => 'required|integer',
+            'firstname' => 'required|string',
+            'position' => 'required',
+            'lastname' => 'required|string',
+            'employee_id' => 'required',
+            'phone' => 'required',
+            'username' => 'required',
+        ]);
 
-         $user->save();
-         return redirect()->route('customers');
+        $id = $request->route('id');
+        $user = User::whereId($id)->first();
 
+        $user->role_id = $request->role_id;
+        $user->firstname = $request->firstname;
+        $user->lastname = $request->lastname;
+        $user->employee_id = $request->employee_id;
+        $user->email = $request->email;
+        $user->phone = $request->phone;
+        $user->position = $request->position;
+        $user->username = $request->username;
+        $user->password = bcrypt($request->password);
+
+        $user->save();
+        return redirect()->route('customers');
     }
 
-    public function deleteUser($id){
+    public function deleteUser($id)
+    {
         User::find($id)->delete($id);
         return response()->json([
             'success' => 'Record deleted successfully!'
-        ]);   
+        ]);
     }
 }

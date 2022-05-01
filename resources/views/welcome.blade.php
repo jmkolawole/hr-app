@@ -3,43 +3,18 @@
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <meta name="csrf-token" content="{{ csrf_token() }}" /> 
-
-    <style>
-        .button-row {
-            padding: 20px
-        }
-
-        .table-row {
-            padding: 20px;
-        }
-
-        .table-header {
-            background-color: white;
-            height: 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center
-        }
-
-        .table-header .form-search {
-            width: 30%;
-        }
-
-    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
 </head>
 
 
 <body>
     <nav class='sidebar sidebar-menu-collapsed'>
-        <a href='#' id='justify-icon'>
-            <span class='glyphicon glyphicon-align-justify'></span>
-        </a>
+        
         <ul>
-            <li class='active'>
+            <li class=''>
                 <a class='expandable' href='#' title='Dashboard'>
-                    <span class='glyphicon glyphicon-home collapsed-element'></span>
-                    <span class='expanded-element'>Dashboard</span>
+                    <span class='glyphicon glyphicon-search collapsed-element'></span>
+                    <span class='expanded-element'>Resources</span>
                 </a>
             </li>
             <li>
@@ -60,10 +35,26 @@
                     <span class='expanded-element'>Account</span>
                 </a>
             </li>
+
+            <li>
+                <a class='expandable' href='#' title='Account'>
+                    <span class='glyphicon glyphicon-user collapsed-element'></span>
+                    <span class='expanded-element'>Others</span>
+                </a>
+            </li>
         </ul>
-        <a href='#' id='logout-icon' title='Logout'>
-            <span class='glyphicon glyphicon-off'></span>
+        <a href='#' id='setting-icon' class="setting-icon">
+            <span class='glyphicon glyphicon-cog'></span>
         </a>
+
+        <a href='#' id='user-icon' class="user-icon">
+            <img src="images/a.jpg">
+        </a>
+
+        <a href='#' id='justify-icon' class="justify-icon">
+            <span class='glyphicon glyphicon-align-justify'></span>
+        </a>
+
     </nav>
     <div class="content" id="content">
         <div class=" container-fluid">
@@ -79,7 +70,7 @@
                             <li class="">
                                 <i class="fa fa-tachometer" aria-hidden="true"></i><a href="#"> Dashboard</a>
                             </li>
-                            <li class="">
+                            <li class="active">
                                 <i class="fa fa-users" aria-hidden="true"></i><a href="#"> Users</a>
                             </li>
                             <li class="">
@@ -161,31 +152,6 @@
                                     <input class="form-control" type="search" placeholder="search">
                                 </div>
                             </div>
-                            <style>
-                                .users-table tr {
-                                    line-height: 50px;
-                                    min-height: 50px;
-                                    height: 50px;
-                                }
-
-                                .users-table .header {
-                                    background-color: #EFF4FA;
-                                    border: 1px solid #ddd
-                                }
-
-                                .users-table img {
-                                    height: 45px;
-                                    width: 45px;
-                                    border-radius: 50%;
-                                    margin-right: 10px;
-                                }
-
-                                .users-table .action span {
-                                    font-size: 22px;
-                                    margin: 0 5px
-                                }
-
-                            </style>
 
                             <table class="table table-borderless users-table">
                                 <thead>
@@ -197,16 +163,27 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-
                                     @foreach ($customers as $customer)
-                                        <tr class="item{{$customer->id}}">
+                                        <tr class="item{{ $customer->id }}">
                                             <td>
-                                                <span><img src="images/a.jpg"></span>
-                                                <span>{{ $customer->firstname }} {{ $customer->lastname }}</span>
-                                                <span class="badge badge-primary">New</span>
+                                                <div class="user-area">
+                                                    <div class="user-info">
+                                                        <span><img src="images/a.jpg"></span>
+                                                        <div class="name"><span>{{ $customer->firstname }}
+                                                                {{ $customer->lastname }}</span>
+                                                            <span class="email">{{ $customer->email }}</span>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="badge-area">
+                                                        <span
+                                                            class="badge bg-{{ selectBadgeColor($customer->role->name) }} pull-right">{{ $customer->role->name }}</span>
+                                                    </div>
+                                                </div>
+
                                             </td>
                                             <td>{{ $customer->created_at }}</td>
-                                            <td>{{ $customer->role->name }}</td>
+                                            <td>{{ $customer->position }}</td>
                                             <td class="action">
                                                 <span>
                                                     <button class="btn"
@@ -215,19 +192,6 @@
                                                             aria-hidden="true"></i>
                                                     </button>
                                                 </span>
-                                                <style>
-                                                    .modal-backdrop {
-                                                        display: none !important;
-                                                        visibility: hidden !important;
-                                                        position: relative !important;
-                                                    }
-
-                                                    .modal {
-                                                        background: url("http://bin.smwcentral.net/u/11361/BlackTransparentBackground.png");
-                                                        z-index: 1100 !important;
-                                                    }
-
-                                                </style>
                                                 <div class="edit-section" style="display: inline">
                                                     <div class=" edit modal fade" id="edit{{ $customer->id }}"
                                                         tabindex="-1" aria-labelledby="exampleModalLabel"
@@ -243,21 +207,24 @@
                                                                         aria-label="Close"></button>
                                                                 </div>
                                                                 <div class="modal-body">
-                                                                    <form id="data-edit{{ $customer->id }}" method="POST"
+                                                                    <form id="data-edit{{ $customer->id }}"
+                                                                        method="POST"
                                                                         action="{{ route('edit.customer', $customer->id) }}">
                                                                         {{ csrf_field() }}
                                                                         <div class="row">
-                                                                            <div class="col-md-12">
+                                                                            <div class="col-md-6">
                                                                                 <div class="mb-3">
-                                                                                    <input type="text"
-                                                                                        name="employee_id"
-                                                                                        value="{{ $customer->employee_id }}"
-                                                                                        placeholder="Employee ID*"
-                                                                                        class="form-control">
+                                                                                    <input type="text" name="employee_id" placeholder="Employee ID*"
+                                                                                        class="form-control" value="{{ $customer->employee_id }}">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <div class="mb-3">
+                                                                                    <input type="text" name="position" placeholder="Position*"
+                                                                                        class="form-control" value="{{ $customer->position }}">
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-
                                                                         <div class="row">
                                                                             <div class="col-md-6">
                                                                                 <div class="mb-3">
@@ -354,24 +321,6 @@
                                                                         </div>
                                                                     </form>
 
-                                                                    <style>
-                                                                        .operations-table .header {
-                                                                            background-color: #EFF4FA;
-                                                                            border: 1px solid #ddd
-                                                                        }
-
-                                                                        .operations-table tr {
-                                                                            line-height: 30px;
-                                                                            min-height: 30px;
-                                                                            height: 30px;
-
-                                                                        }
-
-                                                                        .operations-table .checkbox {
-                                                                            margin-top: 10px
-                                                                        }
-
-                                                                    </style>
                                                                     <table
                                                                         class="table table-borderless operations-table">
                                                                         <thead>
@@ -428,8 +377,10 @@
 
                                                                 </div>
                                                                 <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-primary edit-button"
-                                                                        id="editButton-{{ $customer->id }}">Update User</button>
+                                                                    <button type="button"
+                                                                        class="btn btn-primary edit-button"
+                                                                        id="editButton-{{ $customer->id }}">Update
+                                                                        User</button>
                                                                     <button type="button" class="btn"
                                                                         data-bs-dismiss="modal">Cancel</button>
                                                                 </div>
@@ -440,7 +391,8 @@
 
                                                 <span style="display: inline">
                                                     <button class="btn"><i class="fa fa-trash deleteUser"
-                                                            aria-hidden="true" rel="{{ $customer->id }}"></i></button>
+                                                            aria-hidden="true"
+                                                            rel="{{ $customer->id }}"></i></button>
                                                 </span>
                                             </td>
                                             {{-- Edit Modal here --}}
@@ -469,9 +421,15 @@
                     <form id="data-form" method="POST" action="{{ route('add.customer') }}">
                         {{ csrf_field() }}
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="mb-3">
                                     <input type="text" name="employee_id" placeholder="Employee ID*"
+                                        class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <input type="text" name="position" placeholder="Position*"
                                         class="form-control">
                                 </div>
                             </div>
@@ -618,42 +576,5 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
     <script src="js/script.js"></script>
-    <script>
-        $("#submit-button").on('click', function() {
-            $("#data-form").submit();
-            $('#modal').modal('toggle');
-        });
 
-        $(".edit-button").on('click', function() {
-            var idEdit = $(this).attr('id');
-            var id = idEdit.split('-')[1];
-            
-            $("#data-edit"+id).submit();
-            $('#modal').modal('toggle');
-        });
-
-        $('.deleteUser').click(function() {
-            var id = $(this).attr('rel');
-            var token = $("meta[name='csrf-token']").attr("content");
-            
-            var msg = confirm('Are you sure?');
-            if(msg){
-                $.ajax({
-                        url: "user/delete/" + id,
-                        type: 'DELETE',
-                        data: {
-                            "id": id,
-                            "_token": token,
-                        },
-                        success: function() {
-                            $('.item' + id).remove();
-                            
-                        }
-                    });
-            }else{
-                return;
-            }
-            
-        });
-    </script>
 </body>

@@ -37,3 +37,41 @@
     });
 
 }).call(this);
+
+/* Forms and delete operation */
+$("#submit-button").on('click', function() {
+    $("#data-form").submit();
+    $('#modal').modal('toggle');
+});
+
+$(".edit-button").on('click', function() {
+    var idEdit = $(this).attr('id');
+    var id = idEdit.split('-')[1];
+
+    $("#data-edit" + id).submit();
+    $('#modal').modal('toggle');
+});
+
+$('.deleteUser').click(function() {
+    var id = $(this).attr('rel');
+    var token = $("meta[name='csrf-token']").attr("content");
+
+    var msg = confirm('Are you sure?');
+    if (msg) {
+        $.ajax({
+            url: "user/delete/" + id,
+            type: 'DELETE',
+            data: {
+                "id": id,
+                "_token": token,
+            },
+            success: function() {
+                $('.item' + id).remove();
+
+            }
+        });
+    } else {
+        return;
+    }
+
+});
