@@ -1,4 +1,4 @@
-## About Laravel-Hr
+## About Hr-App
 
 It is a standalone application built to handle staff members of an organization. The application is very straightforward. Basically, to clone and use this project, you need a good understanding and working knowldge of PHP, Laravel and Javascript, with focus on Jquery and AJax. 
 
