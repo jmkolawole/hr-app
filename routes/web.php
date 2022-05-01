@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
+use App\Models\Role;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
+Route::get('/', [CustomerController::class, 'customers'])->name('customers');
+Route::post('/customers', [CustomerController::class, 'addCustomer'])->name('add.customer');
+Route::post('/assign-operation', [CustomerController::class, 'assignOperation'])->name('assign.operation');
