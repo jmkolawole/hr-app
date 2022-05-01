@@ -75,4 +75,29 @@ class CustomerController extends Controller
 
         return redirect()->route('customers');
     }
+
+    public function editCustomer(Request $request){
+         $id = $request->route('id');
+         $user = User::whereId($id)->first();
+         
+         $user->role_id = $request->role_id;
+         $user->firstname = $request->firstname;
+         $user->lastname = $request->lastname;
+         $user->employee_id = $request->employee_id;
+         $user->email = $request->email;
+         $user->phone = $request->phone;
+         $user->username = $request->username;
+         $user->password = bcrypt($request->password);
+
+         $user->save();
+         return redirect()->route('customers');
+
+    }
+
+    public function deleteUser($id){
+        User::find($id)->delete($id);
+        return response()->json([
+            'success' => 'Record deleted successfully!'
+        ]);   
+    }
 }

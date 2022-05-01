@@ -18,4 +18,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [CustomerController::class, 'customers'])->name('customers');
 Route::post('/customers', [CustomerController::class, 'addCustomer'])->name('add.customer');
+Route::post('/customers/{id}', [CustomerController::class, 'editCustomer'])->name('edit.customer');
+Route::delete('/user/delete/{id}', [CustomerController::class, 'deleteUser'])->name('delete.user');
 Route::post('/assign-operation', [CustomerController::class, 'assignOperation'])->name('assign.operation');
