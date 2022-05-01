@@ -18,6 +18,7 @@ class UserTableSeeder extends Seeder
         $admin->role_id = 1;
         $admin->firstname = 'Kolawole';
         $admin->lastname = 'jimoh';
+        $admin->position = 'CEO';
         $admin->employee_id = 23456;
         $admin->email = 'admin@example.com';
         $admin->phone = '07062612572';
@@ -30,6 +31,7 @@ class UserTableSeeder extends Seeder
         $admin->role_id = 4;
         $admin->firstname = 'Adefemi';
         $admin->lastname = 'Segun';
+        $admin->position = 'HR';
         $admin->employee_id = 23456;
         $admin->email = 'employee@example.com';
         $admin->phone = '07062612572';
